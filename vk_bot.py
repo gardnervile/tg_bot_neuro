@@ -15,6 +15,8 @@ def detect_intent_text(project_id, session_id, text, language_code="ru"):
     response = session_client.detect_intent(
         request={"session": session, "query_input": query_input}
     )
+    if response.query_result.intent.is_fallback:
+        return None
     return response.query_result.fulfillment_text
 
 
@@ -38,16 +40,14 @@ def main():
             user_id = event.user_id
             user_text = event.text
 
-            print('Новое сообщение:')
-            print('Для меня от:', user_id)
-            print('Текст:', user_text)
-
             try:
                 response_text = detect_intent_text(project_id, str(user_id), user_text, language_code)
             except Exception as e:
                 print("Ошибка DialogFlow:", e)
                 response_text = "Что-то пошло не так..."
-
+            if not response_text:
+                continue
+             
             vk.messages.send(
                 user_id=user_id,
                 message=response_text,
