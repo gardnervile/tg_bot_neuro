@@ -3,7 +3,9 @@ from dotenv import load_dotenv
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from google.cloud import dialogflow_v2 as dialogflow
+import logging
 
+logging.info("✅ Telegram бот запущен")
 
 def detect_intent_text(project_id, session_id, text, language_code="ru"):
     session_client = dialogflow.SessionsClient()
