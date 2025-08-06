@@ -7,6 +7,7 @@ import logging
 
 logging.info("✅ Telegram бот запущен")
 
+
 def detect_intent_text(project_id, session_id, text, language_code="ru"):
     session_client = dialogflow.SessionsClient()
     session = session_client.session_path(project_id, session_id)
@@ -44,7 +45,8 @@ def main():
                 response_text = detect_intent_text(project_id, str(user_id), user_text, language_code)
             except Exception as e:
                 print("Ошибка DialogFlow:", e)
-                response_text = "Что-то пошло не так..."
+                continue
+
             if not response_text:
                 continue
 
