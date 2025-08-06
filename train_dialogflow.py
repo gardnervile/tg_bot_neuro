@@ -8,6 +8,7 @@ load_dotenv()
 project_id = os.environ["PROJECT_ID"]
 language_code = "ru"
 
+
 def create_intent(project_id, display_name, training_phrases_parts, message_texts):
     client = dialogflow.IntentsClient()
 

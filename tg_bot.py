@@ -38,10 +38,6 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Help!')
-
-
 def handle_message(update: Update, context: CallbackContext) -> None:
     user_text = update.message.text
     response = detect_intent_text(
