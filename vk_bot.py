@@ -33,8 +33,6 @@ def main():
     vk = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
 
-    print("🤖 VK бот запущен и ждёт сообщений...")
-
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
             user_id = event.user_id
@@ -47,7 +45,7 @@ def main():
                 response_text = "Что-то пошло не так..."
             if not response_text:
                 continue
-             
+
             vk.messages.send(
                 user_id=user_id,
                 message=response_text,
