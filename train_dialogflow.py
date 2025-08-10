@@ -3,11 +3,6 @@ import os
 from google.cloud import dialogflow_v2 as dialogflow
 from dotenv import load_dotenv
 
-load_dotenv()
-
-project_id = os.environ["PROJECT_ID"]
-language_code = "ru"
-
 
 def create_intent(project_id, display_name, training_phrases_parts, message_texts):
     client = dialogflow.IntentsClient()
@@ -33,6 +28,9 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
 
 
 def main():
+    load_dotenv()
+
+    project_id = os.environ["PROJECT_ID"]
     with open("questions.json", "r", encoding="utf-8") as file:
         questions = json.load(file)
 

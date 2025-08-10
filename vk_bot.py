@@ -6,26 +6,10 @@ import traceback
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
 from google.cloud import dialogflow_v2 as dialogflow
+from dialogflow_client import detect_intent_text
 
 
 logging.info("✅ Telegram бот запущен")
-
-
-def detect_intent_text(project_id, session_id, text, language_code="ru"):
-    session_client = dialogflow.SessionsClient()
-    session_path = session_client.session_path(project_id, session_id)
-
-    text_input = dialogflow.TextInput(text=text, language_code=language_code)
-    query_input = dialogflow.QueryInput(text=text_input)
-
-    response = session_client.detect_intent(
-        request={"session": session_path, "query_input": query_input}
-    )
-
-    if response.query_result.intent.is_fallback:
-        return None
-    return response.query_result.fulfillment_text
-
 
 
 def main():
@@ -47,7 +31,14 @@ def main():
             user_text = event.text
 
             try:
-                response_text = detect_intent_text(project_id, str(user_id), user_text, language_code)
+                response_text = detect_intent_text(
+                    project_id,
+                    f"vk-{user_id}",
+                    user_text,
+                    language_code,
+                    ignore_fallback=True
+                )
+
             except Exception as e:
                 traceback.print_exc()
                 continue

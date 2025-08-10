@@ -5,10 +5,12 @@ from dotenv import load_dotenv
 
 from telegram import Update, ForceReply, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-
+from dialogflow_client import detect_intent_text
 from google.cloud import dialogflow_v2 as dialogflow
 
+
 logger = logging.getLogger(__name__)
+
 
 class TelegramLogsHandler(logging.Handler):
     def __init__(self, bot: Bot, chat_id: int):
@@ -24,22 +26,6 @@ class TelegramLogsHandler(logging.Handler):
             pass
 
 
-def detect_intent_text(project_id: str, session_id: str, text: str, language_code: str = "ru") -> str:
-    session_client = dialogflow.SessionsClient()
-    session_path = session_client.session_path(project_id, session_id)
-
-    text_input = dialogflow.TextInput(text=text, language_code=language_code)
-    query_input = dialogflow.QueryInput(text=text_input)
-
-    request = {
-        "session": session_path,
-        "query_input": query_input
-    }
-
-    response = session_client.detect_intent(request=request)
-    return response.query_result.fulfillment_text
-
-
 def start(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
     update.message.reply_markdown_v2(
@@ -51,9 +37,9 @@ def start(update: Update, context: CallbackContext) -> None:
 def handle_message(update: Update, context: CallbackContext) -> None:
     user_text = update.message.text
     response = detect_intent_text(
-        text=user_text,
         project_id=context.bot_data["project_id"],
-        session_id=str(update.effective_chat.id),
+        session_id=f"tg-{update.effective_chat.id}",
+        text=user_text,
         language_code="ru"
     )
     update.message.reply_text(response)
